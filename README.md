@@ -25,6 +25,7 @@ but this package provides an alternative for the time being.
 | Name                      | `logsf`  | `log_hazard` | `isf`   |
 |---------------------------|----------|--------------|---------|
 | `Exponential`             | &check;  | &check;      | &check; |
+| `Normal`                  | ?        | ?            | ?       |
 | `Weibull`                 | &check;  | &check;      | &check; |
 
 Legend:

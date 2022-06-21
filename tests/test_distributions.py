@@ -2,8 +2,9 @@ from collections import namedtuple
 
 import torch
 from torch.distributions import constraints
+from torch.testing import assert_close
 
-from survival_distributions import Exponential, Weibull
+from survival_distributions import Exponential, Normal, Weibull
 
 Example = namedtuple("Example", ["Dist", "params"])
 
@@ -26,6 +27,17 @@ EXAMPLES = [
             },
             {"rate": torch.tensor([1.7]), "concentration": torch.tensor([0.1])},
             {"rate": 4.0, "concentration": 2.3},
+        ],
+    ),
+    Example(
+        Normal,
+        [
+            {
+                "loc": torch.tensor([-1.5, 2.5, -5.0]),
+                "scale": torch.tensor([0.5, 2.5, 0.1]),
+            },
+            {"loc": torch.tensor([-2.3]), "scale": torch.tensor([0.1])},
+            {"loc": 4.1, "scale": 2.3},
         ],
     ),
 ]
@@ -93,5 +105,6 @@ def test_density(tolerance=1e-5):
             x = x.requires_grad_()
             sf = dist.sf(x)
             sf.sum().backward()
-            pdf = -x.grad
-            assert torch.allclose(pdf, dist.log_prob(x.detach()).exp(), atol=tolerance)
+            pdf1 = -x.grad
+            pdf2 = dist.log_prob(x.detach()).exp()
+            assert torch.allclose(pdf1, pdf2, atol=tolerance)
