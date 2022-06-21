@@ -1,6 +1,6 @@
 # survival_distributions
 
-This package extends the functionality of univariate distributions in `torch.distributions`
+This package extends the functionality of univariate distributions in [`torch.distributions`](https://pytorch.org/docs/stable/distributions.html)
 by implementing several new methods:
 - `sf`: survival function (complementary CDF)
 - `logsf`: logarithm of the survival function (negative cumulative hazard function)
