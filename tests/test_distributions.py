@@ -74,7 +74,7 @@ def test_ecdf(tolerance=1e-2):
 
 
 def test_sf(tolerance=1e-4):
-    """Test whether cdf, sf, log_cdf and log_sf return compatible values."""
+    """Test if cdf, sf, log_cdf, log_sf, log_prob and log_hazard are compatible."""
     for Dist, configs in EXAMPLES:
         for config in configs:
             dist = Dist(**config)
@@ -108,3 +108,15 @@ def test_density(tolerance=1e-5):
             pdf1 = -x.grad
             pdf2 = dist.log_prob(x.detach()).exp()
             assert torch.allclose(pdf1, pdf2, atol=tolerance)
+
+
+def test_isf(tolerance=1e-5, num_grid_points=100, delta=1e-3):
+    """Check that the inverse survival function is implemented correctly."""
+    for Dist, configs in EXAMPLES:
+        for config in configs:
+            dist = Dist(**config)
+            x = torch.linspace(delta, 1 - delta, num_grid_points)
+            # Change shape to (num_grid_points,) + dist.batch_shape for compatibility
+            expanded_shape = x.shape + (1,) * len(dist.batch_shape)
+            x = x.view(expanded_shape).expand(x.shape + dist.batch_shape)
+            assert torch.allclose(x, dist.sf(dist.isf(x)), atol=tolerance)
