@@ -1,8 +1,9 @@
-import torch
 from numbers import Number
+from typing import Union
+
+import torch
 from torch.distributions import constraints
 from torch.distributions.utils import broadcast_all
-from typing import Union
 
 from .survival_distribution import SurvivalDistribution
 
