@@ -9,8 +9,8 @@ EXAMPLES = [
     Exponential(rate=torch.tensor([0.7, 0.2, 0.4], requires_grad=True)),
     Exponential(rate=torch.tensor([2.3], requires_grad=True)),
     Exponential(rate=2.3),
-    Normal(loc=torch.tensor([-1.5, 2.5, -5.0]), scale=torch.tensor([0.5, 2.5, 0.1])),
-    Normal(loc=torch.tensor([-2.3]), scale=torch.tensor([0.1])),
+    Normal(loc=torch.tensor([-1.5, 2.5, 3.0]), scale=torch.tensor([1.2, 2.5, 0.8])),
+    Normal(loc=torch.tensor([-2.3]), scale=torch.tensor([1.5])),
     Normal(loc=4.1, scale=2.2),
     Weibull(
         rate=torch.tensor([2.0, 0.5, 1.1]), concentration=torch.tensor([0.5, 2.5, 1.0])
@@ -41,16 +41,18 @@ def test_ecdf(dist, tolerance=1e-2):
     cdf = dist.cdf(grid)
     # Compute empirical CDF on the grid points
     samples = dist.sample([NUM_SAMPLES])
-    assert (
-        samples.shape == torch.Size([NUM_SAMPLES]) + dist.batch_shape + dist.event_shape
-    )
+    assert samples.shape == torch.Size([NUM_SAMPLES]) + dist.batch_shape
+
     ecdf = (samples.unsqueeze(1) < grid).float().mean(0)
     return torch.allclose(cdf, ecdf, atol=tolerance)
 
 
 @pytest.mark.parametrize("dist", EXAMPLES)
-def test_sf(dist, tolerance=1e-4):
+def test_distribution_functions(dist, tolerance=1e-4):
     """Test if cdf, sf, log_cdf, log_sf, log_prob and log_hazard are compatible."""
+    # survival_distributions only supports univariate distributions
+    assert dist.event_shape == torch.Size()
+
     grid = grid_on_support(dist)
     cdf = dist.cdf(grid)
     sf = dist.sf(grid)
@@ -89,3 +91,12 @@ def test_isf(dist, tolerance=1e-5, num_grid_points=100, delta=1e-3):
     expanded_shape = x.shape + (1,) * len(dist.batch_shape)
     x = x.view(expanded_shape).expand(x.shape + dist.batch_shape)
     assert torch.allclose(x, dist.sf(dist.isf(x)), atol=tolerance)
+
+
+@pytest.mark.parametrize("dist", EXAMPLES)
+def test_sample_cond(dist, tolerance=1e-3, x_min=0.5, x_max=2.0):
+    samples = dist.sample_cond([NUM_SAMPLES], lower_bound=x_min, upper_bound=x_max)
+    # Numerical issues in isf may produce samples slightly below x_min / above x_max
+    assert samples.min() >= x_min - tolerance
+    assert samples.max() <= x_max + tolerance
+    assert samples.shape == torch.Size([NUM_SAMPLES]) + dist.batch_shape
