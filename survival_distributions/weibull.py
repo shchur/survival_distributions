@@ -49,21 +49,3 @@ class Weibull(SurvivalDistribution):
 
     def _new_tensor(self, shape):
         return self.rate.new(shape)
-
-    # def rsample(self, sample_shape=torch.Size()):
-    #     shape = torch.Size(sample_shape) + self.batch_shape
-    #     z = torch.empty(
-    #         shape, device=self.rate.device, dtype=self.rate.dtype
-    #     ).exponential_(1.0)
-    #     samples = (z * self.rate.reciprocal()).pow(self.concentration.reciprocal())
-    #     return samples
-
-    # def rsample_conditional(
-    #     self, sample_shape=torch.Size(), lower_bound=None, upper_bound=None
-    # ):
-    #     shape = self._extended_shape(sample_shape)
-    #     u_min = self.cdf(lower_bound)
-    #     u_max = self.cdf(upper_bound)
-    #     # Convert Uniform[0, 1] sample to a Uniform[u_min, u_max] sample
-    #     u = (u_max - u_min) * self.rate.new(shape).uniform_() + u_min
-    #     return (-u.log() * self.rate.reciprocal()).pow(self.concentration.reciprocal())

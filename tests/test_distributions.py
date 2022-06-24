@@ -5,7 +5,10 @@ from torch.distributions import constraints
 from survival_distributions import Exponential, Normal, Weibull
 
 NUM_SAMPLES = 100_000
-EXAMPLES = [
+
+SAMPLE_SHAPES = [(NUM_SAMPLES,), (100, 20), (50, 20, 5), (1, 1, 8, 1)]
+
+DISTRIBUTIONS = [
     Exponential(rate=torch.tensor([0.7, 0.2, 0.4], requires_grad=True)),
     Exponential(rate=torch.tensor([2.3], requires_grad=True)),
     Exponential(rate=2.3),
@@ -33,7 +36,7 @@ def grid_on_support(dist, num_grid_points=500, eps=1e-20, x_max=20):
     return grid.view(expanded_shape).expand(grid.shape + dist.batch_shape)
 
 
-@pytest.mark.parametrize("dist", EXAMPLES)
+@pytest.mark.parametrize("dist", DISTRIBUTIONS)
 def test_ecdf(dist, tolerance=1e-2):
     """Check whether the empirical CDF based on the samples is close to the true CDF."""
     grid = grid_on_support(dist)
@@ -41,13 +44,11 @@ def test_ecdf(dist, tolerance=1e-2):
     cdf = dist.cdf(grid)
     # Compute empirical CDF on the grid points
     samples = dist.sample([NUM_SAMPLES])
-    assert samples.shape == torch.Size([NUM_SAMPLES]) + dist.batch_shape
-
     ecdf = (samples.unsqueeze(1) < grid).float().mean(0)
     return torch.allclose(cdf, ecdf, atol=tolerance)
 
 
-@pytest.mark.parametrize("dist", EXAMPLES)
+@pytest.mark.parametrize("dist", DISTRIBUTIONS)
 def test_distribution_functions(dist, tolerance=1e-4):
     """Test if cdf, sf, log_cdf, log_sf, log_prob and log_hazard are compatible."""
     # survival_distributions only supports univariate distributions
@@ -65,9 +66,17 @@ def test_distribution_functions(dist, tolerance=1e-4):
     log_pdf = dist.log_prob(grid)
     log_hazard = dist.log_hazard(grid)
     assert torch.allclose(log_pdf - log_sf, log_hazard, atol=tolerance)
+    assert (
+        cdf.shape
+        == sf.shape
+        == log_sf.shape
+        == log_cdf.shape
+        == log_pdf.shape
+        == log_hazard.shape
+    )
 
 
-@pytest.mark.parametrize("dist", EXAMPLES)
+@pytest.mark.parametrize("dist", DISTRIBUTIONS)
 def test_density(dist, tolerance=1e-5):
     """Compare two ways for computing the PDF of the distribution.
 
@@ -83,7 +92,7 @@ def test_density(dist, tolerance=1e-5):
     assert torch.allclose(pdf1, pdf2, atol=tolerance)
 
 
-@pytest.mark.parametrize("dist", EXAMPLES)
+@pytest.mark.parametrize("dist", DISTRIBUTIONS)
 def test_isf(dist, tolerance=1e-5, num_grid_points=100, delta=1e-3):
     """Check that the inverse survival function is implemented correctly."""
     x = torch.linspace(delta, 1 - delta, num_grid_points)
@@ -93,10 +102,26 @@ def test_isf(dist, tolerance=1e-5, num_grid_points=100, delta=1e-3):
     assert torch.allclose(x, dist.sf(dist.isf(x)), atol=tolerance)
 
 
-@pytest.mark.parametrize("dist", EXAMPLES)
+@pytest.mark.parametrize("dist", DISTRIBUTIONS)
 def test_sample_cond(dist, tolerance=1e-3, x_min=0.5, x_max=2.0):
     samples = dist.sample_cond([NUM_SAMPLES], lower_bound=x_min, upper_bound=x_max)
     # Numerical issues in isf may produce samples slightly below x_min / above x_max
     assert samples.min() >= x_min - tolerance
     assert samples.max() <= x_max + tolerance
     assert samples.shape == torch.Size([NUM_SAMPLES]) + dist.batch_shape
+
+
+@pytest.mark.parametrize("dist", DISTRIBUTIONS)
+def test_sample_shapes(dist):
+    for shape in SAMPLE_SHAPES:
+        s1 = dist.sample(shape)
+        s2 = dist.rsample(shape)
+        s3 = dist.sample_cond(shape, lower_bound=1.0, upper_bound=2.0)
+        s4 = dist.rsample_cond(shape, lower_bound=1.0, upper_bound=2.0)
+        assert (
+            s1.shape
+            == s2.shape
+            == s3.shape
+            == s4.shape
+            == torch.Size(shape) + dist.batch_shape
+        )
