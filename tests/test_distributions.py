@@ -2,7 +2,7 @@ import pytest
 import torch
 from torch.distributions import constraints
 
-from survival_distributions import Exponential, Normal, Weibull
+from survival_distributions import Exponential, LogNormal, Normal, Weibull
 
 NUM_SAMPLES = 100_000
 TOLERANCE_STRICT = 1e-5
@@ -14,6 +14,9 @@ DISTRIBUTIONS = [
     Exponential(rate=torch.tensor([0.7, 0.2, 0.4], requires_grad=True)),
     Exponential(rate=torch.tensor([2.3], requires_grad=True)),
     Exponential(rate=2.3),
+    LogNormal(loc=torch.tensor([-1.5, 2.5, 3.0]), scale=torch.tensor([1.2, 2.5, 0.8])),
+    LogNormal(loc=torch.tensor([-2.2]), scale=torch.tensor([1.2])),
+    LogNormal(loc=0.0, scale=1.5),
     Normal(loc=torch.tensor([-1.5, 2.5, 3.0]), scale=torch.tensor([1.2, 2.5, 0.8])),
     Normal(loc=torch.tensor([-2.3]), scale=torch.tensor([1.5])),
     Normal(loc=4.1, scale=2.2),
