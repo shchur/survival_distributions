@@ -31,17 +31,18 @@ pip install git+https://github.com/shchur/survival-distributions.git
 ### Numerically stable implementation
 For these distributions we provide a numerically stable implementation of `logsf`.
 - `Exponential`
+- `TransformedDistribution`
 - `Weibull`
 
 ### Naive implementation 
 For these distributions we implement `logsf(x)` as `log(1.0 - dist.cdf(x))`, which is less 
 numerically stable.
+- `LogNormal`
 - `Normal`
 
 ### To do
 - `Logistic`
-- `LogNormal`
+- `LogLogistic`
 - `MixtureSameFamily`
 - `Pareto`
-- `TransformedDistribution`
 - `Uniform`
