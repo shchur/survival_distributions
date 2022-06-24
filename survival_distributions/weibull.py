@@ -1,6 +1,8 @@
 import torch
+from numbers import Number
 from torch.distributions import constraints
 from torch.distributions.utils import broadcast_all
+from typing import Union
 
 from .survival_distribution import SurvivalDistribution
 
@@ -13,9 +15,7 @@ class Weibull(SurvivalDistribution):
     support = constraints.positive
     has_rsample = True
 
-    def __init__(
-        self, rate: torch.Tensor, concentration: torch.Tensor, validate_args=None
-    ):
+    def __init__(self, rate, concentration, validate_args=None):
         self.rate, self.concentration = broadcast_all(rate, concentration)
         batch_shape = self.rate.shape
         super().__init__(batch_shape, validate_args=validate_args)
