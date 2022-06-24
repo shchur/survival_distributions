@@ -4,6 +4,7 @@ This package extends the functionality of univariate distributions in [`torch.di
 by implementing several new methods:
 - `sf`: survival function (complementary CDF)
 - `logsf`: logarithm of the survival function (negative cumulative hazard function)
+- `logcdf`: logarithm of the CDF
 - `log_hazard`: logarithm of the hazard function (logarithm of the failure rate)
 - `isf`: inverse of the survival function
 - `sample_cond`: instead of sampling from the full support of the distribution, 
@@ -14,20 +15,33 @@ This is especially useful when working with
 or [survival analysis](https://en.wikipedia.org/wiki/Survival_analysis).
 
 Naive implementation based on existing PyTorch functionality (e.g., 
-`torch.log(1 - p.cdf(x))` for `logsf`) will often not be as accurate and numerically 
+`torch.log(1.0 - dist.cdf(x))` for `logsf`) will often not be as accurate and numerically 
 stable as the implementation provided by `survival_distributions`.
 Hopefully, these methods will be implemented in PyTorch [sometime in the future](https://github.com/pytorch/pytorch/issues/52973), 
 but this package provides an alternative for the time being.
 
+## Installation
 
-### Supported distributions
+```bash
+pip install git+https://github.com/shchur/survival-distributions.git
+```
 
-| Name                      | `logsf`  | `log_hazard` | `isf`   |
-|---------------------------|----------|--------------|---------|
-| `Exponential`             | &check;  | &check;      | &check; |
-| `Normal`                  | ?        | ?            | ?       |
-| `Weibull`                 | &check;  | &check;      | &check; |
+## Supported distributions
 
-Legend:
-- &check; — numerically stable implementation  available
-- ? — naive (numerically unstable) implementation available 
+### Numerically stable implementation
+For these distributions we provide a numerically stable implementation of `logsf`.
+- `Exponential`
+- `Weibull`
+
+### Naive implementation 
+For these distributions we implement `logsf(x)` as `log(1.0 - dist.cdf(x))`, which is less 
+numerically stable.
+- `Normal`
+
+### To do
+- `Logistic`
+- `LogNormal`
+- `MixtureSameFamily`
+- `Pareto`
+- `TransformedDistribution`
+- `Uniform`
