@@ -1,5 +1,4 @@
 import torch
-
 from torch.distributions import constraints
 
 from .survival_distribution import SurvivalDistribution

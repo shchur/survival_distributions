@@ -1,3 +1,5 @@
+from typing import Optional
+
 import torch
 
 
@@ -5,8 +7,7 @@ class SurvivalDistribution(torch.distributions.Distribution):
     """Base class for all survival distributions.
 
     By default, all distributions are expected to implement logsf, log_prob and isf.
-    Other methods (logcdf, log_hazard, rsample, rsample_conditional) are computed based
-    on them.
+    Other methods (logcdf, log_hazard, rsample, rsample_cond) are derived from them.
     """
 
     def logsf(self, value):
@@ -59,11 +60,13 @@ class SurvivalDistribution(torch.distributions.Distribution):
         u = self._new_tensor(shape).uniform_()
         return self.isf(u)
 
-    def rsample_conditional(
-        self, sample_shape=torch.Size(), lower_bound=None, upper_bound=None
+    def rsample_cond(
+        self,
+        sample_shape: torch.Size = torch.Size(),
+        lower_bound: Optional[float] = None,
+        upper_bound: Optional[float] = None,
     ):
         shape = self._extended_shape(sample_shape)
-        # TODO: Should I detach u_min and u_max?
         if lower_bound is not None:
             u_min = self.cdf(lower_bound)
         else:
@@ -73,13 +76,14 @@ class SurvivalDistribution(torch.distributions.Distribution):
         else:
             u_max = 1.0
         u = (u_max - u_min) * self._new_tensor(shape).uniform_() + u_min
-        return self.isf(u)
+        # TODO: Should we detach u here?
+        return self.isf(u.detach())
 
-    def sample_conditional(
+    def sample_cond(
         self, sample_shape=torch.Size(), lower_bound=None, upper_bound=None
     ):
         with torch.no_grad():
-            return self.sample_conditional(
+            return self.rsample_cond(
                 sample_shape=sample_shape,
                 lower_bound=lower_bound,
                 upper_bound=upper_bound,

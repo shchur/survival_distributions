@@ -1,5 +1,4 @@
 import torch
-
 from torch.distributions import constraints
 from torch.distributions.utils import broadcast_all
 
