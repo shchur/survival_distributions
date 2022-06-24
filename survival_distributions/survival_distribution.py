@@ -66,16 +66,34 @@ class SurvivalDistribution(torch.distributions.Distribution):
         lower_bound: Optional[float] = None,
         upper_bound: Optional[float] = None,
     ):
+        """Draw a sample that is guaranteed to be between lower_bound and upper_bound.
+
+        We generate a sample on the interval [upper_bound, upper_bound] as
+            a = sf(upper_bound)
+            b = sf(lower_bound)
+            u ~ Uniform([a, b])  # note the switched order of a, b!
+            x = isf(u)
+
+        If neither lower_bound or upper_bound are given, this is equivalent to the
+        standard rsample
+            u ~ Uniform([0, 1])
+            x = isf(u)
+        """
         shape = self._extended_shape(sample_shape)
+        # Sample u_full from Uniform([0, 1])
+        u_full = self._new_tensor(shape).uniform_()
         if lower_bound is not None:
-            u_min = self.cdf(lower_bound)
-        else:
-            u_min = 0.0
-        if upper_bound is not None:
-            u_max = self.cdf(upper_bound)
+            lb = torch.as_tensor(lower_bound, dtype=u_full.dtype, device=u_full.device)
+            u_max = self.sf(lb)
         else:
             u_max = 1.0
-        u = (u_max - u_min) * self._new_tensor(shape).uniform_() + u_min
+        if upper_bound is not None:
+            ub = torch.as_tensor(upper_bound, dtype=u_full.dtype, device=u_full.device)
+            u_min = self.sf(ub)
+        else:
+            u_min = 0.0
+        # Equivalent to sampling u ~ Uniform([u_min, u_max])
+        u = (u_max - u_min) * u_full + u_min
         # TODO: Should we detach u here?
         return self.isf(u.detach())
 
