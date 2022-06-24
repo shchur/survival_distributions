@@ -40,9 +40,9 @@ class MixtureSameFamily(torch.distributions.MixtureSameFamily, SurvivalDistribut
             gather_dim = sample_len + batch_len
             es = self.event_shape
 
-            # Since we know that the sample x > lower_bound, we have to adjust the
-            # mixing probabilities as p(z_i = k) * Pr(x >= lower_bound | z_i = k)
-            # mixture samples [n, B]
+            # Since we know that the sample lb < x < ub, we have to adjust the mixing
+            # probabilities using the Bayes formula
+            # p(z = k | lb < x < ub) \propto p(z = k) * Pr(lb < x < ub | z = k)
             if lower_bound is not None:
                 above_lb_prob = self.component_distribution.sf(lower_bound)
             else:
@@ -53,9 +53,9 @@ class MixtureSameFamily(torch.distributions.MixtureSameFamily, SurvivalDistribut
             else:
                 above_ub_prob = 0.0
 
-            conditional_mix_probs = self.mixture_distribution.probs * (
-                above_lb_prob - above_ub_prob
-            )
+            # correction = Pr(lb < x < ub | z = k), shape [*batch_shape, num_components]
+            correction = above_lb_prob - above_ub_prob
+            conditional_mix_probs = self.mixture_distribution.probs * correction
             mix_sample = Categorical(probs=conditional_mix_probs).sample(sample_shape)
             mix_shape = mix_sample.shape
 
