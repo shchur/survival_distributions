@@ -1,5 +1,7 @@
 from .exponential import Exponential
+from .log_logistic import LogLogistic
 from .log_normal import LogNormal
+from .logistic import Logistic
 from .mixture_same_family import MixtureSameFamily
 from .normal import Normal
 from .survival_distribution import SurvivalDistribution

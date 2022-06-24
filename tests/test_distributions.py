@@ -1,9 +1,11 @@
 import pytest
 import torch
-from torch.distributions import constraints, Categorical
+from torch.distributions import Categorical, constraints
 
 from survival_distributions import (
     Exponential,
+    Logistic,
+    LogLogistic,
     LogNormal,
     MixtureSameFamily,
     Normal,
@@ -24,6 +26,10 @@ DISTRIBUTIONS = [
     LogNormal(loc=torch.tensor([-1.5, 2.5, 3.0]), scale=torch.tensor([1.2, 2.5, 0.8])),
     LogNormal(loc=torch.tensor([-2.2]), scale=torch.tensor([1.2])),
     LogNormal(loc=0.0, scale=1.5),
+    Logistic(loc=torch.tensor([-1.5, 2.5, 3.0]), scale=torch.tensor([1.2, 2.5, 0.8])),
+    LogLogistic(
+        loc=torch.tensor([1.5, 2.5, -2.0]), scale=torch.tensor([1.2, 0.2, 0.8])
+    ),
     MixtureSameFamily(
         mixture_distribution=Categorical(
             logits=torch.empty(NUM_COMPONENTS).normal_(0.0, 0.2)
