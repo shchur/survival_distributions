@@ -5,6 +5,8 @@ from torch.distributions import constraints
 from survival_distributions import Exponential, Normal, Weibull
 
 NUM_SAMPLES = 100_000
+TOLERANCE_STRICT = 1e-5
+TOLERANCE_RELAXED = 1e-2
 
 SAMPLE_SHAPES = [(NUM_SAMPLES,), (100, 20), (50, 20, 5), (1, 1, 8, 1)]
 
@@ -19,11 +21,11 @@ DISTRIBUTIONS = [
         rate=torch.tensor([2.0, 0.5, 1.1]), concentration=torch.tensor([0.5, 2.5, 1.0])
     ),
     Weibull(rate=torch.tensor([1.7]), concentration=torch.tensor([0.1])),
-    Weibull(rate=4.0, concentration=2.3),
+    Weibull(rate=2.0, concentration=2.5),
 ]
 
 
-def grid_on_support(dist, num_grid_points=500, eps=1e-20, x_max=20):
+def grid_on_support(dist, num_grid_points=500, eps=1e-20, x_max=15):
     """Generate a grid on the support of the distribution"""
     if dist.support == constraints.positive:
         grid = torch.linspace(eps, x_max, num_grid_points)
@@ -37,7 +39,7 @@ def grid_on_support(dist, num_grid_points=500, eps=1e-20, x_max=20):
 
 
 @pytest.mark.parametrize("dist", DISTRIBUTIONS)
-def test_ecdf(dist, tolerance=1e-2):
+def test_ecdf(dist, tolerance=TOLERANCE_RELAXED):
     """Check whether the empirical CDF based on the samples is close to the true CDF."""
     grid = grid_on_support(dist)
     # Compute true CDF on the grid points
@@ -49,7 +51,7 @@ def test_ecdf(dist, tolerance=1e-2):
 
 
 @pytest.mark.parametrize("dist", DISTRIBUTIONS)
-def test_distribution_functions(dist, tolerance=1e-4):
+def test_distribution_functions(dist, tolerance=TOLERANCE_STRICT):
     """Test if cdf, sf, log_cdf, log_sf, log_prob and log_hazard are compatible."""
     # survival_distributions only supports univariate distributions
     assert dist.event_shape == torch.Size()
@@ -77,7 +79,7 @@ def test_distribution_functions(dist, tolerance=1e-4):
 
 
 @pytest.mark.parametrize("dist", DISTRIBUTIONS)
-def test_density(dist, tolerance=1e-5):
+def test_density(dist, tolerance=TOLERANCE_STRICT):
     """Compare two ways for computing the PDF of the distribution.
 
     1. Using the log_prob method.
@@ -103,7 +105,7 @@ def test_isf(dist, tolerance=1e-5, num_grid_points=100, delta=1e-3):
 
 
 @pytest.mark.parametrize("dist", DISTRIBUTIONS)
-def test_sample_cond(dist, tolerance=1e-3, x_min=0.5, x_max=2.0):
+def test_sample_cond(dist, tolerance=TOLERANCE_RELAXED, x_min=0.5, x_max=2.0):
     samples = dist.sample_cond([NUM_SAMPLES], lower_bound=x_min, upper_bound=x_max)
     # Numerical issues in isf may produce samples slightly below x_min / above x_max
     assert samples.min() >= x_min - tolerance
