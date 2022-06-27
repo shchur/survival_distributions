@@ -84,6 +84,7 @@ $$F(x) = 1 - \exp(-\lambda x)$$
 - Inverse SF
 $$S^{-1}(u) = -\frac{1}{\lambda} \log (u)$$
 
+---
 
 ### Logistic
 - Parameters
@@ -99,6 +100,7 @@ $$F(x) = \frac{1}{1 + \exp\left(-\frac{x - \mu}{s}\right)}$$
 - Inverse SF
 $$S^{-1}(u) = s \cdot \log\left(\frac{1-u}{u}\right) + \mu$$
 
+---
 
 ### LogLogistic
 - Parameters
@@ -114,7 +116,7 @@ $$F(x) = \frac{1}{1 + \exp\left(-\frac{\log(x) - \mu}{s}\right)}$$
 - Inverse SF
 $$S^{-1}(u) = \exp\left(s \cdot \log\left(\frac{1-u}{u}\right) + \mu\right)$$
 
-
+---
 
 ### LogNormal
 - Parameters
@@ -131,6 +133,7 @@ $$S(x) = 1 - \Phi\left(\frac{\log(x)-\mu}{s}\right)$$
 - Inverse SF
 $$S^{-1}(u) = \exp\left(s \cdot \Phi^{-1}(u) + \mu\right)$$
 
+---
 
 ### Normal
 - Parameters
@@ -147,6 +150,8 @@ $$S(x) = 1 - \Phi\left(\frac{x-\mu}{s}\right)$$
 - Inverse SF
 $$S^{-1}(u) = s \cdot \Phi^{-1}(u) + \mu$$
 
+---
+
 ### Uniform
 - Parameters
     - lower boundary $a$
@@ -160,6 +165,8 @@ $$F(x) = \frac{x - a}{b - a}$$
 $$F(x) = \frac{b - x}{b - a}$$
 - Inverse SF
 $$S^{-1}(u) = b - u \cdot (b - a)$$
+
+---
 
 ### Weibull
 - Parameters

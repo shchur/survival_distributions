@@ -20,7 +20,7 @@ stable as the implementation provided by `survival_distributions`.
 Hopefully, these methods will be implemented in PyTorch [sometime in the future](https://github.com/pytorch/pytorch/issues/52973), 
 but this package provides an alternative for the time being.
 
-See [`DISTRIBUTIONS.md`]() for more details about the implemented functions and supported distributions.
+See [`DISTRIBUTIONS.md`](https://github.com/shchur/survival_distributions/blob/main/DISTRIBUTIONS.md) for more details about the implemented functions and supported distributions.
 
 ## Installation
 1. Install the latest version of [PyTorch](https://pytorch.org/get-started/locally/).
