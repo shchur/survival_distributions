@@ -43,20 +43,26 @@ class MixtureSameFamily(torch.distributions.MixtureSameFamily, SurvivalDistribut
             # Since we know that the sample lb < x < ub, we have to adjust the mixing
             # probabilities using the Bayes formula
             # p(z = k | lb < x < ub) \propto p(z = k) * Pr(lb < x < ub | z = k)
+            dtype = self.mixture_distribution.probs.dtype
+            device = self.mixture_distribution.probs.device
             if lower_bound is not None:
-                above_lb_prob = self.component_distribution.sf(lower_bound)
+                lb = torch.as_tensor(lower_bound, dtype=dtype, device=device)
+                above_lb_prob = self.component_distribution.sf(lb)
             else:
                 above_lb_prob = 1.0
 
             if upper_bound is not None:
-                above_ub_prob = self.component_distribution.sf(upper_bound)
+                ub = torch.as_tensor(upper_bound, dtype=dtype, device=device)
+                above_ub_prob = self.component_distribution.sf(ub)
             else:
                 above_ub_prob = 0.0
 
             # correction = Pr(lb < x < ub | z = k), shape [*batch_shape, num_components]
             correction = above_lb_prob - above_ub_prob
-            conditional_mix_probs = self.mixture_distribution.probs * correction
-            mix_sample = Categorical(probs=conditional_mix_probs).sample(sample_shape)
+            conditional_mix_logits = (
+                self.mixture_distribution.probs * correction
+            ).log()
+            mix_sample = Categorical(logits=conditional_mix_logits).sample(sample_shape)
             mix_shape = mix_sample.shape
 
             # component samples [n, B, k, E]
