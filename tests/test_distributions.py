@@ -9,6 +9,7 @@ from survival_distributions import (
     LogNormal,
     MixtureSameFamily,
     Normal,
+    Uniform,
     Weibull,
 )
 
@@ -42,6 +43,7 @@ DISTRIBUTIONS = [
     Normal(loc=torch.tensor([-1.5, 2.5, 3.0]), scale=torch.tensor([1.2, 2.5, 0.8])),
     Normal(loc=torch.tensor([-2.3]), scale=torch.tensor([1.5])),
     Normal(loc=4.1, scale=2.2),
+    Uniform(low=-0.5, high=2.0),
     Weibull(
         rate=torch.tensor([2.0, 0.5, 1.1]), concentration=torch.tensor([0.5, 2.5, 1.0])
     ),
@@ -50,12 +52,18 @@ DISTRIBUTIONS = [
 ]
 
 
-def grid_on_support(dist, num_grid_points=500, eps=1e-20, x_max=10):
+def grid_on_support(dist, num_grid_points=500, eps=1e-5, x_max=10):
     """Generate a grid on the support of the distribution"""
     if dist.support == constraints.positive:
         grid = torch.linspace(eps, x_max, num_grid_points)
     elif dist.support == constraints.real:
         grid = torch.linspace(-x_max, x_max, num_grid_points)
+    elif isinstance(dist.support, constraints.interval):
+        grid = torch.linspace(
+            dist.support.lower_bound + eps,
+            dist.support.upper_bound - eps,
+            num_grid_points,
+        )
     else:
         raise ValueError("dist must have support positive or real")
     # The grid must have shape (num_grid_points,) + dist.batch_shape
