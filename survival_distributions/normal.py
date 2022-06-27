@@ -25,7 +25,7 @@ class Normal(torch.distributions.Normal, SurvivalDistribution):
     def isf(self, u):
         if self._validate_args:
             assert constraints.unit_interval.check(u).all()
-        return self.loc + self.scale * torch.erfinv(1 - 2 * u) * math.sqrt(2)
+        return self.loc + self.scale * torch.special.ndtri(1.0 - u)
 
     def _new_tensor(self, shape):
         return self.loc.new(shape)
