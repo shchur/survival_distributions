@@ -20,8 +20,11 @@ stable as the implementation provided by `survival_distributions`.
 Hopefully, these methods will be implemented in PyTorch [sometime in the future](https://github.com/pytorch/pytorch/issues/52973), 
 but this package provides an alternative for the time being.
 
-## Installation
+See [`DISTRIBUTIONS.md`]() for more details about the implemented functions and supported distributions.
 
+## Installation
+1. Install the latest version of [PyTorch](https://pytorch.org/get-started/locally/).
+2. Install `survival_distributions`
 ```bash
 pip install git+https://github.com/shchur/survival-distributions.git
 ```
@@ -43,3 +46,27 @@ For these distributions we implement `logsf(x)` as `log(1.0 - dist.cdf(x))`, whi
 numerically stable.
 - `LogNormal`
 - `Normal`
+
+
+## Usage
+The package provides a drop-in replacement for `torch.distributions`, so you can just modify your code as follows.
+
+**Old code**
+```python
+import torch
+
+dist = torch.distributions.Exponential(rate=torch.tensor(2.0))
+x = torch.tensor(1.5)
+
+log_survival_proba = torch.log(1.0 - dist.cdf(x))
+```
+**New code**
+```python
+import torch
+import survival_distributions as sd
+
+dist = sd.Exponential(rate=torch.tensor(2.0))
+x = torch.tensor(1.5)
+
+log_survival_proba = dist.logsf(x)
+```
