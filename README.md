@@ -35,6 +35,7 @@ For these distributions we provide a numerically stable implementation of `logsf
 - `LogLogistic`
 - `MixtureSameFamily`
 - `TransformedDistribution`
+- `Uniform`
 - `Weibull`
 
 ### Naive implementation 
@@ -42,7 +43,3 @@ For these distributions we implement `logsf(x)` as `log(1.0 - dist.cdf(x))`, whi
 numerically stable.
 - `LogNormal`
 - `Normal`
-
-### To do
-- `Pareto`
-- `Uniform`
