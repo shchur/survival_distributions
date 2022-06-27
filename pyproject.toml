@@ -1,3 +1,21 @@
+[project]
+name = "survival_distributions"
+version = "0.0.2"
+authors = [
+  { name="Oleksandr Shchur", email="oleks.shchur@gmail.com" },
+]
+description = "Extended functionality for univariate probability distributions in PyTorch"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/shchur/survival_distributions"
+
 [tool.black]
 line-length = 88
 
