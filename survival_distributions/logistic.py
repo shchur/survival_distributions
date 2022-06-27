@@ -1,7 +1,7 @@
 import torch
 import torch.nn.functional as F
-from torch.distributions.utils import broadcast_all
 from torch.distributions import constraints
+from torch.distributions.utils import broadcast_all
 
 from .survival_distribution import SurvivalDistribution
 
