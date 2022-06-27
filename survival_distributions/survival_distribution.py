@@ -95,7 +95,7 @@ class SurvivalDistribution(torch.distributions.Distribution):
         # Equivalent to sampling u ~ Uniform([u_min, u_max])
         u = (u_max - u_min) * u_full + u_min
         # TODO: Should we detach u here?
-        return self.isf(u.detach())
+        return self.isf(u)
 
     def sample_cond(
         self, sample_shape=torch.Size(), lower_bound=None, upper_bound=None
