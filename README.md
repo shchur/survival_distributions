@@ -26,7 +26,9 @@ See [`DISTRIBUTIONS.md`](https://github.com/shchur/survival_distributions/blob/m
 1. Install the latest version of [PyTorch](https://pytorch.org/get-started/locally/).
 2. Install `survival_distributions`
 ```bash
-pip install git+ssh://git@github.com/shchur/survival-distributions.git
+git clone git@github.com:shchur/survival_distributions.git
+cd survival_distributions
+pip install .
 ```
 
 ## Supported distributions
