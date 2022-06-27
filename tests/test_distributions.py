@@ -22,10 +22,8 @@ SAMPLE_SHAPES = [(NUM_SAMPLES,), (100, 20), (50, 20, 5), (1, 1, 8, 1)]
 
 DISTRIBUTIONS = [
     Exponential(rate=torch.tensor([0.7, 0.2, 0.4], requires_grad=True)),
-    Exponential(rate=torch.tensor([2.3], requires_grad=True)),
     Exponential(rate=2.3),
     LogNormal(loc=torch.tensor([-1.5, 2.5, 3.0]), scale=torch.tensor([1.2, 2.5, 0.8])),
-    LogNormal(loc=torch.tensor([-2.2]), scale=torch.tensor([1.2])),
     LogNormal(loc=0.0, scale=1.5),
     Logistic(loc=torch.tensor([-1.5, 2.5, 3.0]), scale=torch.tensor([1.2, 2.5, 0.8])),
     LogLogistic(
@@ -41,13 +39,11 @@ DISTRIBUTIONS = [
         ),
     ),
     Normal(loc=torch.tensor([-1.5, 2.5, 3.0]), scale=torch.tensor([1.2, 2.5, 0.8])),
-    Normal(loc=torch.tensor([-2.3]), scale=torch.tensor([1.5])),
     Normal(loc=4.1, scale=2.2),
     Uniform(low=-0.5, high=2.0),
     Weibull(
         rate=torch.tensor([2.0, 0.5, 1.1]), concentration=torch.tensor([0.5, 2.5, 1.0])
     ),
-    Weibull(rate=torch.tensor([1.7]), concentration=torch.tensor([0.1])),
     Weibull(rate=2.0, concentration=2.5),
 ]
 
