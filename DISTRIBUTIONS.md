@@ -172,7 +172,7 @@ $$p(x) = \frac{1}{b - a}$$
 - CDF
 $$F(x) = \frac{x - a}{b - a}$$
 - SF
-$$F(x) = \frac{b - x}{b - a}$$
+$$S(x) = \frac{b - x}{b - a}$$
 - Inverse SF
 $$S^{-1}(u) = b - u \cdot (b - a)$$
 
