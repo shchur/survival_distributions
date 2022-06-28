@@ -19,54 +19,63 @@ In machine learning, we usually work with the following two functions:
 1. [Probability density function (PDF)](https://en.wikipedia.org/wiki/Probability_density_function)
 $$p(x) = \Pr(X \in [x, x + dt))$$
 2. [Cumulative distribution function (CDF)](https://en.wikipedia.org/wiki/Cumulative_distribution_function)
+
 $$
-\begin{align*}
+\begin{aligned}
 F(x) &= \Pr(X \le x)\\
 &= \int_{-\infty}^{x} p(u) du
-\end{align*}
+\end{aligned}
 $$
+
 However, there also exist other options that can be convenient in practice.
 For example, when working with temporal point processes or survival analysis, we often prefer the following two functions:
 
 3. [Survival function (SF)](https://en.wikipedia.org/wiki/Survival_function)
+
 $$
-\begin{align*}
+\begin{aligned}
 S(x) &= \Pr(X \ge x)\\
 &= 1 - F(x)
-\end{align*}
+\end{aligned}
 $$
+
 4. [Hazard function (a.k.a., failure rate or intensity)](https://en.wikipedia.org/wiki/Failure_rate)
+
 $$
-\begin{align*}
+\begin{aligned}
 h(x) &= \Pr(X \in [x, x + dt) \mid X \ge x)\\
 &= \frac{p(x)}{S(x)}
-\end{align*}
+\end{aligned}
 $$
 
 Each of these four functions uniquely defines the distribution of $X$.
 Therefore, if we specify either $p(x)$, $F(x)$, $S(x)$ or $h(x)$, the other 3 functions are immediately defined as well.
 
 ### Sampling
-The **inverse survival function** $S^{-1}$ provides us with a simple way to generate samples of $X$ using $\operatorname{Uniform}([0, 1])$ noise:
+The **inverse survival function** $S^{-1}$ provides us with a simple way to generate samples of $X$ using uniform noise:
 
-\begin{align}
+$$
+\begin{aligned}
 u &\sim \operatorname{Uniform}([0, 1])\\
 x &= S^{-1}(u)
-\end{align}
+\end{aligned}
+$$
 
 The above procedure generates a sample from the entire support of the distribution.
 However, we can easily adapt it to only draw samples from an interval $[x_{\text{min}}, x_{\text{max}}] \subseteq \mathbb{R}$.
 
-\begin{align}
+$$
+\begin{aligned}
 a &= S(x_{\text{max}})\\
 b &= S(x_{\text{min}})\\
 u &\sim \operatorname{Uniform}([a, b])\\
 x &= S^{-1}(u)
-\end{align}
+\end{aligned}
+$$
 
 Here is an example where this can be useful.
 Suppose $X$ corresponds to inter-arrival time between events (e.g., failures of some machine in a factory).
-If we know that no failure occurred in the last $x_{\text{min}} = 50$ days, we can use the above procedure to draw samples conditioned on this fact.
+If we know that **no** failure occurred in the last 50 days, we can use the above procedure to draw samples conditioned on this fact by setting $x_{\text{min}} = 50$.
 
 
 ## List of probability distributions
