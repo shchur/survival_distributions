@@ -48,23 +48,22 @@ Therefore, if we specify either $p(x)$, $F(x)$, $S(x)$ or $h(x)$, the other 3 fu
 
 ### Sampling
 The **inverse survival function** $S^{-1}$ provides us with a simple way to generate samples of $X$ using $\operatorname{Uniform}([0, 1])$ noise:
-$$
-\begin{align*}
+
+\begin{align}
 u &\sim \operatorname{Uniform}([0, 1])\\
 x &= S^{-1}(u)
-\end{align*}
-$$
+\end{align}
 
 The above procedure generates a sample from the entire support of the distribution.
 However, we can easily adapt it to only draw samples from an interval $[x_{\text{min}}, x_{\text{max}}] \subseteq \mathbb{R}$.
-$$
-\begin{align*}
+
+\begin{align}
 a &= S(x_{\text{max}})\\
 b &= S(x_{\text{min}})\\
 u &\sim \operatorname{Uniform}([a, b])\\
 x &= S^{-1}(u)
-\end{align*}
-$$
+\end{align}
+
 Here is an example where this can be useful.
 Suppose $X$ corresponds to inter-arrival time between events (e.g., failures of some machine in a factory).
 If we know that no failure occurred in the last $x_{\text{min}} = 50$ days, we can use the above procedure to draw samples conditioned on this fact.
