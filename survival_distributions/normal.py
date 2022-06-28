@@ -11,7 +11,7 @@ class Normal(torch.distributions.Normal, SurvivalDistribution):
         if self._validate_args:
             self._validate_sample(value)
         z = (value - self.loc) / self.scale
-        return 1.0 - torch.special.ndtr(z)
+        return torch.special.ndtr(-z)
 
     def logsf(self, value):
         return torch.log(self.sf(value))

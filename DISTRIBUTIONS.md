@@ -87,10 +87,10 @@ If we know that **no** failure occurred in the last 50 days, we can use the abov
 - Support: $(0, \infty)$
 - PDF
 $$p(x) = \lambda \exp(- \lambda x)$$
-- SF
-$$S(x) = \exp(-\lambda x)$$
 - CDF
 $$F(x) = 1 - \exp(-\lambda x)$$
+- SF
+$$S(x) = \exp(-\lambda x)$$
 - Inverse SF
 $$S^{-1}(u) = -\frac{1}{\lambda} \log (u)$$
 
@@ -103,10 +103,10 @@ $$S^{-1}(u) = -\frac{1}{\lambda} \log (u)$$
 - Support: $\mathbb{R}$
 - PDF
 $$p(x) = \frac{\exp\left(\frac{x - \mu}{s}\right)}{s \cdot \left(1 + \exp\left(\frac{x - \mu}{s}\right)\right)^2}$$
-- SF
-$$S(x) = \frac{1}{1 + \exp\left(\frac{x - \mu}{s}\right)}$$
 - CDF
 $$F(x) = \frac{1}{1 + \exp\left(-\frac{x - \mu}{s}\right)}$$
+- SF
+$$S(x) = \frac{1}{1 + \exp\left(\frac{x - \mu}{s}\right)}$$
 - Inverse SF
 $$S^{-1}(u) = s \cdot \log\left(\frac{1-u}{u}\right) + \mu$$
 
@@ -119,10 +119,10 @@ $$S^{-1}(u) = s \cdot \log\left(\frac{1-u}{u}\right) + \mu$$
 - Support: $(0, \infty)$
 - PDF
 $$p(x) = \frac{\exp\left(\frac{\log(x) - \mu}{s}\right)}{x \cdot s \cdot \left(1 + \exp\left(\frac{\log(x) - \mu}{s}\right)\right)^2}$$
-- SF
-$$S(x) = \frac{1}{1 + \exp\left(\frac{\log(x) - \mu}{s}\right)}$$
 - CDF
 $$F(x) = \frac{1}{1 + \exp\left(-\frac{\log(x) - \mu}{s}\right)}$$
+- SF
+$$S(x) = \frac{1}{1 + \exp\left(\frac{\log(x) - \mu}{s}\right)}$$
 - Inverse SF
 $$S^{-1}(u) = \exp\left(s \cdot \log\left(\frac{1-u}{u}\right) + \mu\right)$$
 
@@ -139,9 +139,9 @@ $$p(x) = \frac{1}{x s\sqrt{2\pi}}\exp\left(-\frac{(\log (x) - \mu)^2}{2s^2}\righ
 $$F(x) = \Phi\left(\frac{\log(x)-\mu}{s}\right)$$
   where $\Phi$ is the CDF of the standard normal distribution.
 - SF
-$$S(x) = 1 - \Phi\left(\frac{\log(x)-\mu}{s}\right)$$
+$$S(x) = \Phi\left(-\frac{\log(x)-\mu}{s}\right)$$
 - Inverse SF
-$$S^{-1}(u) = \exp\left(s \cdot \Phi^{-1}(u) + \mu\right)$$
+$$S^{-1}(u) = \exp\left(s \cdot \Phi^{-1}(1 - u) + \mu\right)$$
 
 ---
 
@@ -156,9 +156,9 @@ $$p(x) = \frac{1}{s\sqrt{2\pi}}\exp\left(-\frac{(x - \mu)^2}{2s^2}\right)$$
 $$F(x) = \Phi\left(\frac{x-\mu}{s}\right)$$
   where $\Phi$ is the CDF of the standard normal distribution.
 - SF
-$$S(x) = 1 - \Phi\left(\frac{x-\mu}{s}\right)$$
+$$S(x) = \Phi\left(1 - \frac{x-\mu}{s}\right)$$
 - Inverse SF
-$$S^{-1}(u) = s \cdot \Phi^{-1}(u) + \mu$$
+$$S^{-1}(u) = s \cdot \Phi^{-1}(1 - u) + \mu$$
 
 ---
 
@@ -185,9 +185,9 @@ $$S^{-1}(u) = b - u \cdot (b - a)$$
 - Support: $(0, \infty)$
 - PDF
 $$p(x) = b k x^{k-1} \exp(-bx^k)$$
-- SF
-$$S(x) = \exp(-bx^k)$$
 - CDF
 $$F(x) = 1 - \exp(-bx^k)$$
+- SF
+$$S(x) = \exp(-bx^k)$$
 - Inverse SF
 $$S^{-1}(u) = \left(-\frac{1}{b} \log (u)\right)^{\frac{1}{k}}$$
