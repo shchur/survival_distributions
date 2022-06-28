@@ -61,8 +61,10 @@ x &= S^{-1}(u)
 \end{aligned}
 $$
 
-The above procedure generates a sample from the entire support of the distribution.
-However, we can easily adapt it to only draw samples from an interval $[x_{\text{min}}, x_{\text{max}}] \subseteq \mathbb{R}$.
+This is equivalent to the [inverse transform sampling](https://en.wikipedia.org/wiki/Inverse_transform_sampling).
+
+The above procedure generates a sample from the entire support of the distribution (e.g., between 0 and $\infty$).
+However, we can easily adapt it to only draw samples from an interval $[x_{\text{min}}, x_{\text{max}}]$.
 
 $$
 \begin{aligned}
