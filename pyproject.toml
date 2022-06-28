@@ -1,6 +1,6 @@
 [project]
 name = "survival_distributions"
-version = "0.0.2"
+version = "0.0.3"
 authors = [
   { name="Oleksandr Shchur", email="oleks.shchur@gmail.com" },
 ]

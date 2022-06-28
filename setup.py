@@ -4,7 +4,7 @@ setup(
     name="survival_distributions",
     author="Oleksandr Shchur",
     description="Extended functionality for univariate probability distributions in PyTorch",
-    version="0.0.2",
+    version="0.0.3",
     license="MIT",
     author_email="oleks.shchur@gmail.com",
     url="https://github.com/shchur/survival_distributions",
