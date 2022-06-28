@@ -124,7 +124,7 @@ def test_density(dist, tolerance=TOLERANCE_STRICT):
 
 
 @pytest.mark.parametrize("dist", DISTRIBUTIONS)
-def test_isf(dist, tolerance=1e-5, num_grid_points=100, delta=1e-3):
+def test_isf(dist, tolerance=TOLERANCE_STRICT, num_grid_points=100, delta=1e-3):
     """Check that the inverse survival function is implemented correctly."""
     x = torch.linspace(delta, 1 - delta, num_grid_points)
     # Change shape to (num_grid_points,) + dist.batch_shape for compatibility
